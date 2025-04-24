@@ -28,7 +28,7 @@ async function fetchRSS(url) {
       return {
         title: item.querySelector('title')?.textContent || 'No title',
         link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#',
-        thumbnail: extractMedia(content, item),
+        thumbnail: extractImage(content, item),
         description: content
       };
     });
@@ -56,7 +56,6 @@ function renderFeed(items) {
   }
   items.forEach(item => {
     const thumbnail = item.thumbnail;
-    const isVideo = thumbnail?.endsWith('.mp4') || thumbnail?.endsWith('.webm');
     const isGif = thumbnail?.endsWith('.gif');
 
     const feedItem = document.createElement('div');
@@ -65,8 +64,6 @@ function renderFeed(items) {
     let media;
     if (!thumbnail) {
       media = `<div class="no-thumbnail"></div>`;
-    } else if (isVideo) {
-      media = `<video class="thumbnail" src="${thumbnail}" autoplay muted loop playsinline></video>`;
     } else {
       media = `<img class="thumbnail" src="${thumbnail}" alt="${item.title}" onerror="this.replaceWith(document.createElement('div')); this.className='no-thumbnail'">`;
     }
@@ -79,8 +76,8 @@ function renderFeed(items) {
   });
 }
 
-// Extract media (image or video) from description or item
-function extractMedia(content, item) {
+// Extract image from description or item
+function extractImage(content, item) {
   try {
     // Try parsing content/description
     if (content) {
@@ -91,26 +88,18 @@ function extractMedia(content, item) {
         console.log('Extracted image:', img.src);
         return img.src;
       }
-      const video = doc.querySelector('video[source]');
-      if (video) {
-        const source = video.querySelector('source')?.src;
-        if (source) {
-          console.log('Extracted video:', source);
-          return source;
-        }
-      }
     }
     // Fallback to media:thumbnail or enclosure
     const thumbnail = item.querySelector('thumbnail')?.getAttribute('url') ||
                      item.querySelector('enclosure')?.getAttribute('url');
     if (thumbnail) {
-      console.log('Extracted media from item:', thumbnail);
+      console.log('Extracted image from item:', thumbnail);
       return thumbnail;
     }
-    console.log('No media found');
+    console.log('No image found');
     return null;
   } catch (error) {
-    console.error('Error extracting media:', error);
+    console.error('Error extracting image:', error);
     return null;
   }
 }
