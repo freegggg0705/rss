@@ -8,6 +8,10 @@
 </head>
 <body>
   <div class="controls">
+    <div class="rss-input">
+      <input type="text" id="rss-url" placeholder="Enter RSS feed URL" value="https://www.reddit.com/r/gifs.rss">
+      <button onclick="loadRSS()">Load Feed</button>
+    </div>
     <div class="column-controls">
       <button onclick="setColumns(2)">2 Columns</button>
       <button onclick="setColumns(3)">3 Columns</button>
