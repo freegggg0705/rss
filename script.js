@@ -1,5 +1,5 @@
 // Sample RSS feed URL (replace with your own)
-const rssUrl = 'https://example.com/feed'; // Replace with a valid RSS feed URL
+const rssUrl = 'https://www.reddit.com/r/gifsgonewild.rss'; // Replace with a valid RSS feed URL
 
 // Fetch and parse RSS feed
 async function fetchRSS() {
