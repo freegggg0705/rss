@@ -1,15 +1,18 @@
-// Default RSS feed URL
-const defaultRssUrl = 'https://www.reddit.com/r/gifs.rss';
+// Default RSS feed URL (using NYT for reliability)
+const defaultRssUrl = 'https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml';
 
 // Fetch and parse RSS feed
 async function fetchRSS(url) {
   try {
+    console.log('Fetching RSS feed:', url); // Debug: Log the URL
     // Fetch RSS feed directly (CORS handled by browser add-on)
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error('Fetch failed with status:', response.status, response.statusText); // Debug: Log status
+      throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
     }
     const text = await response.text();
+    console.log('Received response:', text.substring(0, 200)); // Debug: Log first 200 chars of response
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'application/xml');
     
@@ -72,6 +75,7 @@ function extractImage(description) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(description, 'text/html');
   const img = doc.querySelector('img');
+  console.log('Extracted image:', img ? img.src : 'None'); // Debug: Log image URL
   return img ? img.src : null;
 }
 
@@ -111,19 +115,4 @@ function toggleView(view) {
 
 // Set grid size
 function setGridSize(size) {
-  const container = document.getElementById('feed-container');
-  const sizes = {
-    small: '100px',
-    medium: '150px',
-    large: '200px'
-  };
-  container.style.gridTemplateColumns = `repeat(auto-fill, minmax(${sizes[size]}, 1fr))`;
-  document.querySelectorAll('.feed-item').forEach(item => {
-    item.className = `feed-item ${size} grid`;
-  });
-}
-
-// Initialize
-document.getElementById('rss-url').value = defaultRssUrl;
-fetchRSS(defaultRssUrl);
-setColumns(3);
+  const container
