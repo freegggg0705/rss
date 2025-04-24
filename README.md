@@ -1,4 +1,4 @@
-About using side by side rss reader in https://freegggg0705.github.io/rss/simple/12345.html
+About using side by side rss reader in https://freegggg0705.github.io/rss/simple/12345.html  
 And About using column wise or grid wise rss reader in 
 https://freegggg0705.github.io/rss/simple2/12345.html  [First try that work]  
 https://freegggg0705.github.io/rss/simple3/12345.html  [Ehancement]    
