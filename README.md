@@ -76,8 +76,8 @@ In Chrome, you can toggle extensions via chrome://extensions/ or right-click the
 About use it reddit:     
 You can turn your multireddit into rss by adding ".rss" after it, but remember to turn your multireddit to private       
 You can also turn your reddit frontpage into subreddit, getting the link from your profile in old reddit   
-You can use https://www.reddit.com/r/gifsgonewild/top/.rss?t=month [hour/day/week/year/all] [best/new/rising/hot]
-    
+You can use https://www.reddit.com/r/gifsgonewild/top/.rss?t=month [hour/day/week/year/all] [best/new/rising/hot]   
+`Maximum of 20 articles even though you use something like r/gifs+rss+gifsgonewild syntax wont change the fact`
     
     
 >---for reference of different version---         
