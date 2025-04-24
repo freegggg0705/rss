@@ -1,5 +1,5 @@
 // RSS feed URL for r/gifsgonewild
-const rssUrl = 'https://www.reddit.com/r/gifsgonewild.rss';
+const rssUrl = 'https://feeds.feedburner.com/avnoone';
 
 // Fetch and parse RSS feed
 async function fetchRSS() {
