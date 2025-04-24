@@ -71,9 +71,15 @@ In Chrome, you can toggle extensions via chrome://extensions/ or right-click the
 
 
 
-About using side by side rss reader in https://freegggg0705.github.io/rss/simple/12345.html  
-And About using column wise or grid wise rss reader in https://freegggg0705.github.io/rss/simple5/12345.html [Final Version]  
-
+# About using side by side rss reader in https://freegggg0705.github.io/rss/simple/12345.html  
+# And About using column wise or grid wise rss reader in https://freegggg0705.github.io/rss/simple5/12345.html [Final Version]  
+> About use it reddit:   
+You can turn your multireddit into rss by adding ".rss" after it, but remember to turn your multireddit to private   
+You can also turn your reddit frontpage into subreddit, getting the link from your profile in old reddit
+You can use https://www.reddit.com/r/gifsgonewild/top/.rss?t=month [hour/day/week/year/all] [best/new/rising/hot]
+    
+    
+    
 ---for reference of different version---         
 https://freegggg0705.github.io/rss/simple2/12345.html  [First try that work]  
 https://freegggg0705.github.io/rss/simple3/12345.html  [Ehancement]    
