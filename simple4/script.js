@@ -23,12 +23,15 @@ async function fetchRSS(url) {
 
     const entries = xml.querySelectorAll('entry').length > 0 ? xml.querySelectorAll('entry') : xml.querySelectorAll('item');
     console.log('Found entries:', entries.length);
-    const items = Array.from(entries).map(item => ({
-      title: item.querySelector('title')?.textContent || 'No title',
-      link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#',
-      thumbnail: extractMedia(item.querySelector('content')?.textContent || item.querySelector('description')?.textContent),
-      description: item.querySelector('content')?.textContent || item.querySelector('description')?.textContent || ''
-    }));
+    const items = Array.from(entries).map(item => {
+      const content = item.querySelector('content')?.textContent || item.querySelector('description')?.textContent || '';
+      return {
+        title: item.querySelector('title')?.textContent || 'No title',
+        link: item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#',
+        thumbnail: extractMedia(content, item),
+        description: content
+      };
+    });
 
     if (items.length === 0) {
       throw new Error('No feed items found');
@@ -37,6 +40,7 @@ async function fetchRSS(url) {
     return items;
   } catch (error) {
     console.error('Error fetching RSS:', error);
+    document.getElementById('feed-container').innerHTML += `<p>Error loading ${url}: ${error.message}</p>`;
     return null;
   }
 }
@@ -64,7 +68,7 @@ function renderFeed(items) {
     } else if (isVideo) {
       media = `<video class="thumbnail" src="${thumbnail}" autoplay muted loop playsinline></video>`;
     } else {
-      media = `<img class="thumbnail" src="${thumbnail}?w=200" alt="${item.title}">`;
+      media = `<img class="thumbnail" src="${thumbnail}" alt="${item.title}" onerror="this.replaceWith(document.createElement('div')); this.className='no-thumbnail'">`;
     }
 
     feedItem.innerHTML = `
@@ -75,24 +79,40 @@ function renderFeed(items) {
   });
 }
 
-// Extract media (image or video) from description
-function extractMedia(description) {
-  if (!description) return null;
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(description, 'text/html');
-  const img = doc.querySelector('img');
-  const video = doc.querySelector('video[source]');
-  if (img) {
-    console.log('Extracted image:', img.src);
-    return img.src;
+// Extract media (image or video) from description or item
+function extractMedia(content, item) {
+  try {
+    // Try parsing content/description
+    if (content) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(content, 'text/html');
+      const img = doc.querySelector('img');
+      if (img && img.src) {
+        console.log('Extracted image:', img.src);
+        return img.src;
+      }
+      const video = doc.querySelector('video[source]');
+      if (video) {
+        const source = video.querySelector('source')?.src;
+        if (source) {
+          console.log('Extracted video:', source);
+          return source;
+        }
+      }
+    }
+    // Fallback to media:thumbnail or enclosure
+    const thumbnail = item.querySelector('thumbnail')?.getAttribute('url') ||
+                     item.querySelector('enclosure')?.getAttribute('url');
+    if (thumbnail) {
+      console.log('Extracted media from item:', thumbnail);
+      return thumbnail;
+    }
+    console.log('No media found');
+    return null;
+  } catch (error) {
+    console.error('Error extracting media:', error);
+    return null;
   }
-  if (video) {
-    const source = video.querySelector('source')?.src;
-    console.log('Extracted video:', source);
-    return source;
-  }
-  console.log('No media found');
-  return null;
 }
 
 // Load RSS feed(s) from input
