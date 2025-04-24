@@ -87,4 +87,18 @@ button:hover {
   #feed-container.columns {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
+  
+}
+
+.rss-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+#rss-url {
+  padding: 8px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
