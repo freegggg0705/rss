@@ -1,13 +1,18 @@
-// RSS feed URL for r/gifsgonewild
-const rssUrl = 'https://feeds.feedburner.com/avnoone';
+// Default RSS feed URL
+const defaultRssUrl = 'https://www.reddit.com/r/gifs.rss';
 
 // Fetch and parse RSS feed
-async function fetchRSS() {
+async function fetchRSS(url) {
   try {
-    // Use corsproxy.io to avoid CORS issues
-    const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(rssUrl)}`);
+    // Try corsproxy.io first
+    let response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.warn(`corsproxy.io failed with status: ${response.status}, trying fallback proxy`);
+      // Fallback to allorigins.win
+      response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
     }
     const text = await response.text();
     const parser = new DOMParser();
@@ -18,11 +23,12 @@ async function fetchRSS() {
       throw new Error('Error parsing RSS feed');
     }
     
-    // Parse Reddit's Atom feed (<entry> tags)
-    const items = Array.from(xml.querySelectorAll('entry')).map(item => ({
+    // Parse Reddit's Atom feed or standard RSS
+    const entries = xml.querySelectorAll('entry').length > 0 ? xml.querySelectorAll('entry') : xml.querySelectorAll('item');
+    const items = Array.from(entries).map(item => ({
       title: item.querySelector('title')?.textContent || 'No title',
-      thumbnail: extractImage(item.querySelector('content')?.textContent) || 'https://via.placeholder.com/100',
-      description: item.querySelector('content')?.textContent || ''
+      thumbnail: extractImage(item.querySelector('content')?.textContent || item.querySelector('description')?.textContent) || 'https://via.placeholder.com/100',
+      description: item.querySelector('content')?.textContent || item.querySelector('description')?.textContent || ''
     }));
     
     // Check if items were found
@@ -33,7 +39,7 @@ async function fetchRSS() {
     renderFeed(items);
   } catch (error) {
     console.error('Error fetching RSS:', error);
-    document.getElementById('feed-container').innerHTML = '<p>Error loading feed: ' + error.message + '</p>';
+    document.getElementById('feed-container').innerHTML = `<p>Error loading feed: ${error.message}</p>`;
   }
 }
 
@@ -72,6 +78,16 @@ function extractImage(description) {
   const doc = parser.parseFromString(description, 'text/html');
   const img = doc.querySelector('img');
   return img ? img.src : null;
+}
+
+// Load RSS feed from input
+function loadRSS() {
+  const rssUrl = document.getElementById('rss-url').value.trim();
+  if (!rssUrl) {
+    document.getElementById('feed-container').innerHTML = '<p>Please enter a valid RSS feed URL.</p>';
+    return;
+  }
+  fetchRSS(rssUrl);
 }
 
 // Set number of columns
@@ -113,5 +129,6 @@ function setGridSize(size) {
 }
 
 // Initialize
-fetchRSS();
+document.getElementById('rss-url').value = defaultRssUrl;
+fetchRSS(defaultRssUrl);
 setColumns(3);
