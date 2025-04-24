@@ -1,10 +1,10 @@
-// Sample RSS feed URL
+// RSS feed URL for r/gifsgonewild
 const rssUrl = 'https://www.reddit.com/r/gifsgonewild.rss';
 
 // Fetch and parse RSS feed
 async function fetchRSS() {
   try {
-    // Use a different CORS proxy
+    // Use corsproxy.io to avoid CORS issues
     const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(rssUrl)}`);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
@@ -41,7 +41,7 @@ async function fetchRSS() {
 function renderFeed(items) {
   const container = document.getElementById('feed-container');
   container.innerHTML = '';
-  if (!items) {
+  if (!items || !Array.isArray(items)) {
     container.innerHTML = '<p>No feed items to display.</p>';
     return;
   }
@@ -91,9 +91,7 @@ function toggleView(view) {
   const gridControls = document.querySelector('.grid-size-controls');
   container.className = view;
   gridControls.style.display = view === 'grid' ? 'block' : 'none';
-  if
-
- (view === 'grid') {
+  if (view === 'grid') {
     setGridSize('medium');
   } else {
     setColumns(3);
