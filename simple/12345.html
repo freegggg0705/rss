@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple RSS Feed Reader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="input-bar">
+        <label>Feed 1:</label>
+        <input type="text" id="rssFeed1" placeholder="Enter RSS Feed URL (e.g., http://localhost:8000/sample.xml)">
+        <button onclick="loadFeed(1)">Load Feed 1</button>
+        <label>Feed 2:</label>
+        <input type="text" id="rssFeed2" placeholder="Enter RSS Feed URL (e.g., http://localhost:8000/sample.xml)">
+        <button onclick="loadFeed(2)">Load Feed 2</button>
+    </div>
+    <div class="container">
+        <div class="feed-section">
+            <div class="article-list" id="articleList1"></div>
+            <div class="article-content" id="articleContent1">Select an article to view content.</div>
+        </div>
+        <div class="feed-section">
+            <div class="article-list" id="articleList2"></div>
+            <div class="article-content" id="articleContent2">Select an article to view content.</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
