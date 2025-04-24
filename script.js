@@ -4,15 +4,10 @@ const defaultRssUrl = 'https://www.reddit.com/r/gifs.rss';
 // Fetch and parse RSS feed
 async function fetchRSS(url) {
   try {
-    // Try corsproxy.io first
-    let response = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`);
+    // Fetch RSS feed directly (CORS handled by browser add-on)
+    const response = await fetch(url);
     if (!response.ok) {
-      console.warn(`corsproxy.io failed with status: ${response.status}, trying fallback proxy`);
-      // Fallback to allorigins.win
-      response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const text = await response.text();
     const parser = new DOMParser();
