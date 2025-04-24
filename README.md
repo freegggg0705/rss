@@ -5,7 +5,8 @@ And About using column wise or grid wise rss reader in https://freegggg0705.gith
 https://freegggg0705.github.io/rss/simple2/12345.html  [First try that work]  
 https://freegggg0705.github.io/rss/simple3/12345.html  [Ehancement]    
 https://freegggg0705.github.io/rss/simple4/12345.html [Crashed gif load due to thumbnail down quality process maybe or video extract maybe]   
----
+
+----------------------------------------
 
 1. Remember to install addon to unblock CORS (Cross-Origin Resource Sharing) restrictions enforced by your browser.  
    https://addons.mozilla.org/en-US/firefox/addon/cors-unblock/
