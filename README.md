@@ -1,7 +1,7 @@
 About using side by side rss reader in https://freegggg0705.github.io/rss/simple/12345.html  
 And About using column wise or grid wise rss reader in https://freegggg0705.github.io/rss/simple5/12345.html [Final Version]  
 
----for reference of different version---
+---for reference of different version---         
 https://freegggg0705.github.io/rss/simple2/12345.html  [First try that work]  
 https://freegggg0705.github.io/rss/simple3/12345.html  [Ehancement]    
 https://freegggg0705.github.io/rss/simple4/12345.html [Crashed gif load due to thumbnail down quality process maybe or video extract maybe]   
