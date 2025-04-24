@@ -1,24 +1,14 @@
-// Sample RSS feed URL (replace with your own)
-const rssUrl = 'https://www.reddit.com/r/gifsgonewild.rss'; // Replace with a valid RSS feed URL
+// Sample RSS feed URL
+const rssUrl = 'https://www.reddit.com/r/gifsgonewild.rss';
 
 // Fetch and parse RSS feed
 async function fetchRSS() {
   try {
-    const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
-    const data = await response.json();
-    renderFeed(data.items);
-  } catch (error) {
-    console.error('Error fetching RSS:', error);
-    document.getElementById('feed-container').innerHTML = '<p>Error loading feed.</p>';
-  }
-}
-
-// Render feed items
-// Fetch and parse RSS feed
-async function fetchRSS() {
-  try {
-    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`);
-    if (!response.ok) throw new Error('Network response was not ok');
+    // Use a different CORS proxy
+    const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(rssUrl)}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
     const text = await response.text();
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'application/xml');
@@ -28,19 +18,56 @@ async function fetchRSS() {
       throw new Error('Error parsing RSS feed');
     }
     
+    // Parse Reddit's Atom feed (<entry> tags)
     const items = Array.from(xml.querySelectorAll('entry')).map(item => ({
-      title: item.querySelector('title').textContent,
-      thumbnail: extractImage(item.querySelector('content').textContent) || 'https://via.placeholder.com/100',
-      description: item.querySelector('content').textContent
+      title: item.querySelector('title')?.textContent || 'No title',
+      thumbnail: extractImage(item.querySelector('content')?.textContent) || 'https://via.placeholder.com/100',
+      description: item.querySelector('content')?.textContent || ''
     }));
+    
+    // Check if items were found
+    if (items.length === 0) {
+      throw new Error('No feed items found');
+    }
+    
     renderFeed(items);
   } catch (error) {
     console.error('Error fetching RSS:', error);
-    document.getElementById('feed-container').innerHTML = '<p>Error loading feed. Please try again later.</p>';
+    document.getElementById('feed-container').innerHTML = '<p>Error loading feed: ' + error.message + '</p>';
   }
 }
-// Extract first image from description (fallback)
+
+// Render feed items
+function renderFeed(items) {
+  const container = document.getElementById('feed-container');
+  container.innerHTML = '';
+  if (!items) {
+    container.innerHTML = '<p>No feed items to display.</p>';
+    return;
+  }
+  items.forEach(item => {
+    const thumbnail = item.thumbnail || 'https://via.placeholder.com/100';
+    const isVideo = thumbnail.endsWith('.mp4') || thumbnail.endsWith('.webm');
+    const isGif = thumbnail.endsWith('.gif');
+    
+    const feedItem = document.createElement('div');
+    feedItem.className = 'feed-item';
+    
+    const media = isVideo 
+      ? `<video class="thumbnail" src="${thumbnail}" autoplay muted loop playsinline></video>`
+      : `<img class="thumbnail" src="${thumbnail}" alt="${item.title}">`;
+    
+    feedItem.innerHTML = `
+      ${media}
+      <h2 class="title">${item.title}</h2>
+    `;
+    container.appendChild(feedItem);
+  });
+}
+
+// Extract first image from description
 function extractImage(description) {
+  if (!description) return null;
   const parser = new DOMParser();
   const doc = parser.parseFromString(description, 'text/html');
   const img = doc.querySelector('img');
@@ -64,10 +91,12 @@ function toggleView(view) {
   const gridControls = document.querySelector('.grid-size-controls');
   container.className = view;
   gridControls.style.display = view === 'grid' ? 'block' : 'none';
-  if (view === 'grid') {
-    setGridSize('medium'); // Default grid size
+  if
+
+ (view === 'grid') {
+    setGridSize('medium');
   } else {
-    setColumns(3); // Default column count
+    setColumns(3);
   }
 }
 
@@ -87,4 +116,4 @@ function setGridSize(size) {
 
 // Initialize
 fetchRSS();
-setColumns(3); // Default to 3 columns
+setColumns(3);
