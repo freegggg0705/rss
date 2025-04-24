@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSS Feed Reader</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="controls">
+    <div class="rss-input">
+      <input type="text" id="rss-url" placeholder="Enter RSS feed URL" value="https://feeds.npr.org/1001/rss.xml">
+      <button onclick="loadRSS()">Load Feed</button>
+    </div>
+    <div class="column-controls">
+      <button onclick="setColumns(2)">2 Columns</button>
+      <button onclick="setColumns(3)">3 Columns</button>
+      <button onclick="setColumns(4)">4 Columns</button>
+    </div>
+    <div class="slider">
+      <label for="column-width">Column Width:</label>
+      <input type="range" id="column-width" min="200" max="400" value="300" oninput="adjustColumnWidth(this.value)">
+    </div>
+    <div class="view-toggle">
+      <button onclick="toggleView('columns')">Column View</button>
+      <button onclick="toggleView('grid')">Grid View</button>
+    </div>
+    <div class="grid-size-controls" style="display: none;">
+      <button onclick="setGridSize('small')">Small Grid</button>
+      <button onclick="setGridSize('medium')">Medium Grid</button>
+      <button onclick="setGridSize('large')">Large Grid</button>
+    </div>
+  </div>
+  <div id="feed-container" class="columns"></div>
+  <script src="script.js"></script>
+</body>
+</html>
