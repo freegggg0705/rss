@@ -14,30 +14,31 @@ async function fetchRSS() {
 }
 
 // Render feed items
-function renderFeed(items) {
-  const container = document.getElementById('feed-container');
-  container.innerHTML = '';
-  items.forEach(item => {
-    const thumbnail = item.thumbnail || extractImage(item.description) || 'https://via.placeholder.com/100';
-    const isVideo = thumbnail.endsWith('.mp4') || thumbnail.endsWith('.webm');
-    const isGif = thumbnail.endsWith('.gif');
+// Fetch and parse RSS feed
+async function fetchRSS() {
+  try {
+    const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const text = await response.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, 'application/xml');
     
-    const feedItem = document.createElement('div');
-    feedItem.className = 'feed-item';
+    // Check for XML parsing errors
+    if (xml.querySelector('parsererror')) {
+      throw new Error('Error parsing RSS feed');
+    }
     
-    // Use video tag for videos, img for images/GIFs
-    const media = isVideo 
-      ? `<video class="thumbnail" src="${thumbnail}" autoplay muted loop playsinline></video>`
-      : `<img class="thumbnail" src="${thumbnail}" alt="${item.title}">`;
-    
-    feedItem.innerHTML = `
-      ${media}
-      <h2 class="title">${item.title}</h2>
-    `;
-    container.appendChild(feedItem);
-  });
+    const items = Array.from(xml.querySelectorAll('entry')).map(item => ({
+      title: item.querySelector('title').textContent,
+      thumbnail: extractImage(item.querySelector('content').textContent) || 'https://via.placeholder.com/100',
+      description: item.querySelector('content').textContent
+    }));
+    renderFeed(items);
+  } catch (error) {
+    console.error('Error fetching RSS:', error);
+    document.getElementById('feed-container').innerHTML = '<p>Error loading feed. Please try again later.</p>';
+  }
 }
-
 // Extract first image from description (fallback)
 function extractImage(description) {
   const parser = new DOMParser();
